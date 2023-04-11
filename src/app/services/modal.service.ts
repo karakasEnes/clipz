@@ -18,14 +18,17 @@ export class ModalService {
       id,
       visible: false,
     });
-    console.log(this.modalsData);
   }
 
-  isModalOpen() {
-    return true;
+  isModalOpen(id: string): boolean {
+    return Boolean(this.modalsData.find((e) => e.id === id)?.visible);
   }
 
-  toggleModal() {
-    // this.visible = !this.visible;
+  toggleModal(id: string) {
+    const modal = this.modalsData.find((e) => e.id === id);
+
+    if (modal) {
+      modal.visible = !modal.visible;
+    }
   }
 }
