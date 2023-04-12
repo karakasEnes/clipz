@@ -16,6 +16,15 @@ export class TabsContainerComponent implements AfterContentInit {
     new QueryList();
 
   ngAfterContentInit(): void {
-    console.log(this.tabs);
+    const activeTabs = this.tabs.filter((t) => t.active);
+
+    if (!activeTabs || activeTabs.length === 0) {
+      this.selectTab(this.tabs.first);
+    }
+  }
+
+  selectTab(tab: TabComponent) {
+    this.tabs.forEach((t) => (t.active = false));
+    tab.active = true;
   }
 }
