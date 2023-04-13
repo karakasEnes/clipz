@@ -1,6 +1,11 @@
 <input [formControl]="control" [type]="type" [placeholder]="placeholder" class="block w-full py-1.5 px-3 text-gray-200 border border-gray-400 transition
     duration-500 focus:outline-none rounded bg-transparent focus:border-indigo-400" placeholder="Enter Name" />
 <ng-container *ngIf="control.dirty">
+
+  <p *ngIf="control.errors?.['pattern']" class="text-red-500">
+    The password should contain at least 8 characters. 1 Upperletter 1 Lowerletter and 1 Number.
+  </p>
+
   <p *ngIf="control.errors?.['required']" class="text-red-500">
     The Field is Required</p>
   <p *ngIf="control.errors?.['minlength']" class="text-red-500">
