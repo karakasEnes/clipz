@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
-
+import IUser from 'src/app/models/user.model';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -12,7 +12,7 @@ export class RegisterComponent {
   registerForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    age: new FormControl('', [
+    age: new FormControl<number | null>(null, [
       Validators.required,
       Validators.min(13),
       Validators.max(120),
@@ -43,7 +43,7 @@ export class RegisterComponent {
     this.alertColor = 'blue';
 
     try {
-      await this.auth.createUser(this.registerForm.value);
+      await this.auth.createUser(this.registerForm.value as IUser);
 
       this.alertMsg = 'Account has been created successfully!';
       this.alertColor = 'green';

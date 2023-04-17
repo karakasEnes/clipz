@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-
+import IUser from '../models/user.model';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   constructor(private auth: AngularFireAuth, private db: AngularFirestore) {}
 
-  async createUser(formData) {
+  async createUser(formData: IUser) {
     await this.auth.createUserWithEmailAndPassword(
       formData.email as string,
       formData.password as string
