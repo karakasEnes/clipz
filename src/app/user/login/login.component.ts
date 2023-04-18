@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,8 +12,29 @@ export class LoginComponent {
     password: '',
   };
 
-  login() {
-    console.log('Login the system');
-    console.log(this.credentials);
+  alertMsg = '';
+  showAlert = false;
+  alertColor = 'blue';
+  isSubmission = false;
+
+  constructor(private auth: AuthService) {}
+
+  async login() {
+    this.isSubmission = true;
+    this.alertMsg = 'Loging in ... Wait please!';
+    this.alertColor = 'blue';
+    this.showAlert = true;
+
+    try {
+      await this.auth.loginUser(this.credentials);
+      this.alertMsg = 'Successfully logged in.';
+      this.alertColor = 'green';
+    } catch (e) {
+      this.alertMsg = "Can't log, please try again!";
+      this.alertColor = 'red';
+      this.showAlert = true;
+      this.isSubmission = false;
+      return;
+    }
   }
 }

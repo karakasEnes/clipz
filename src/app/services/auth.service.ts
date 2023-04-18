@@ -6,6 +6,12 @@ import {
 } from '@angular/fire/compat/firestore';
 import IUser from '../models/user.model';
 import { Observable, map } from 'rxjs';
+
+interface ILoginCredentials {
+  email: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -41,5 +47,12 @@ export class AuthService {
     await userCred.user.updateProfile({
       displayName: formData.name,
     });
+  }
+
+  async loginUser(loginCredentials: ILoginCredentials) {
+    await this.auth.signInWithEmailAndPassword(
+      loginCredentials.email,
+      loginCredentials.password
+    );
   }
 }
