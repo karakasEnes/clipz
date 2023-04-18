@@ -7,10 +7,14 @@ export class RegisterValidators {
       const controlTwo = formGroup.get(controlNameTwo);
 
       if (!controlOne || !controlTwo) {
+        // this error is for the devs.
         return { controlNotFound: true };
       }
 
-      return controlOne.value === controlTwo.value ? null : { noMatch: true };
+      const err =
+        controlOne.value === controlTwo.value ? null : { noMatch: true };
+      controlTwo.setErrors(err);
+      return err;
     };
   }
 }
