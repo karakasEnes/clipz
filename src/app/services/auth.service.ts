@@ -61,4 +61,8 @@ export class AuthService {
   async signOutWrapper() {
     await this.auth.signOut();
   }
+
+  async getEmailsArray(email: string) {
+    return await this.auth.fetchSignInMethodsForEmail(email);
+  }
 }
