@@ -1,16 +1,16 @@
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export class RegisterValidators {
-  static match(formGroup: AbstractControl): ValidationErrors | null {
-    const controlPsw = formGroup.get('password');
-    const controlPswConfirm = formGroup.get('confirm_password');
+  static match(controlNameOne: string, controlNameTwo: string): ValidatorFn {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const controlOne = formGroup.get(controlNameOne);
+      const controlTwo = formGroup.get(controlNameTwo);
 
-    if (!controlPsw || !controlPswConfirm) {
-      return { controlNotFound: true };
-    }
+      if (!controlOne || !controlTwo) {
+        return { controlNotFound: true };
+      }
 
-    return controlPsw.value === controlPswConfirm.value
-      ? null
-      : { noMatch: true };
+      return controlOne.value === controlTwo.value ? null : { noMatch: true };
+    };
   }
 }

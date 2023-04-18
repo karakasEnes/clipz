@@ -33,7 +33,7 @@ export class RegisterComponent {
         Validators.maxLength(14),
       ]),
     },
-    [RegisterValidators.match]
+    [RegisterValidators.match('password', 'confirm_password')]
   );
 
   constructor(private auth: AuthService) {}
