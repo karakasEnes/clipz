@@ -5,7 +5,7 @@ import {
   AngularFirestoreCollection,
 } from '@angular/fire/compat/firestore';
 import IUser from '../models/user.model';
-import { Observable, map } from 'rxjs';
+import { Observable, map, delay } from 'rxjs';
 
 interface ILoginCredentials {
   email: string;
@@ -18,9 +18,11 @@ interface ILoginCredentials {
 export class AuthService {
   usersCollection: AngularFirestoreCollection<IUser>;
   isAuthenticated$: Observable<boolean>;
+  isAuthenticatedWithDelay$: Observable<boolean>;
   constructor(private auth: AngularFireAuth, private db: AngularFirestore) {
     this.usersCollection = db.collection('users');
     this.isAuthenticated$ = auth.user.pipe(map((user) => !!user));
+    this.isAuthenticatedWithDelay$ = this.isAuthenticated$.pipe(delay(1200));
   }
 
   async createUser(formData: IUser) {
