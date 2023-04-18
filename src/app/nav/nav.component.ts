@@ -21,4 +21,9 @@ export class NavComponent {
     e.preventDefault();
     this.modal.toggleModal('auth');
   }
+
+  async logout(e: Event) {
+    e.preventDefault();
+    await this.auth.signOutWrapper();
+  }
 }

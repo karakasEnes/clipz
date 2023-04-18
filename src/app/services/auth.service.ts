@@ -57,4 +57,8 @@ export class AuthService {
       loginCredentials.password
     );
   }
+
+  async signOutWrapper() {
+    await this.auth.signOut();
+  }
 }
