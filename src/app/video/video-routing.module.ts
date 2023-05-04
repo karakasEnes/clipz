@@ -28,6 +28,11 @@ const routes: Routes = [
   },
 
   {
+    path: 'manage-clips',
+    redirectTo: 'manage',
+  },
+
+  {
     path: '**',
     component: NotFoundComponent,
   },
