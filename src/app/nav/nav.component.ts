@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ModalService } from '../services/modal.service';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 
 ModalService;
 @Component({
@@ -12,11 +11,7 @@ ModalService;
 export class NavComponent {
   isAuthenticated = false;
 
-  constructor(
-    public modal: ModalService,
-    public auth: AuthService,
-    private router: Router
-  ) {
+  constructor(public modal: ModalService, public auth: AuthService) {
     this.auth.isAuthenticated$.subscribe((status) => {
       this.isAuthenticated = status;
     });
@@ -25,11 +20,5 @@ export class NavComponent {
   openModal(e: Event) {
     e.preventDefault();
     this.modal.toggleModal('auth');
-  }
-
-  async logout(e: Event) {
-    e.preventDefault();
-    await this.auth.signOutWrapper();
-    await this.router.navigateByUrl('/');
   }
 }
