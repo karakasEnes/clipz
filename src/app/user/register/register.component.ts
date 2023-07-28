@@ -56,11 +56,9 @@ export class RegisterComponent {
 
     try {
       await this.auth.createUser(this.registerForm.value as IUser);
-
       this.alertMsg = 'Account has been created successfully!';
       this.alertColor = 'green';
     } catch (e) {
-      console.error(e);
       this.alertMsg = 'An error occured. Please try again!';
       this.alertColor = 'red';
       this.inSubmission = false;
