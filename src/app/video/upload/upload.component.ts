@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-upload',
@@ -20,6 +22,8 @@ export class UploadComponent {
     title: this.titleFC,
   });
 
+  constructor(private storage: AngularFireStorage) {}
+
   storeFile(e: Event) {
     this.isDragover = false;
 
@@ -35,6 +39,9 @@ export class UploadComponent {
   }
 
   uploadFile() {
-    console.log('Uploaded file..');
+    const uniqueFileName = uuidv4();
+    //Angular will understand automatically we want to store in sub-folder.
+    const clipPath = `clips/${uniqueFileName}.mp4`;
+    this.storage.upload(clipPath, this.file);
   }
 }
