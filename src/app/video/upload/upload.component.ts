@@ -17,6 +17,7 @@ export class UploadComponent {
   alertColor = 'blue';
   alertMsg = 'Please wait! Your clip is being uploaded';
   inSubmission = false;
+  percentage = 0;
 
   titleFC = new FormControl('', {
     validators: [Validators.required, Validators.minLength(3)],
@@ -52,6 +53,10 @@ export class UploadComponent {
     const uniqueFileName = uuidv4();
     //Angular will understand automatically we want to store in sub-folder.
     const clipPath = `clips/${uniqueFileName}.mp4`;
-    this.storage.upload(clipPath, this.file);
+    const uploadTask = this.storage.upload(clipPath, this.file);
+
+    uploadTask.percentageChanges().subscribe((progress) => {
+      this.percentage = (progress as number) / 100;
+    });
   }
 }
