@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { Component, OnDestroy } from '@angular/core';
+import {
+  AngularFireStorage,
+  AngularFireUploadTask,
+} from '@angular/fire/compat/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { last, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
@@ -11,7 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.css'],
 })
-export class UploadComponent {
+export class UploadComponent implements OnDestroy {
   isDragover = false;
   file: File | null = null;
   isFormVisible = false;
@@ -23,6 +26,7 @@ export class UploadComponent {
   percentage = 0;
   showPercentage = false;
   user: any;
+  uploadTask?: AngularFireUploadTask;
 
   titleFC = new FormControl('', {
     validators: [Validators.required, Validators.minLength(3)],
@@ -41,6 +45,10 @@ export class UploadComponent {
     this.user = this.authService
       .getAuthedUser()
       .subscribe((user) => (this.user = user));
+  }
+
+  ngOnDestroy(): void {
+    this.uploadTask?.cancel();
   }
 
   storeFile(e: Event) {
@@ -70,14 +78,14 @@ export class UploadComponent {
     const uniqueFileName = uuidv4();
     //Angular will understand automatically we want to store in sub-folder.
     const clipPath = `clips/${uniqueFileName}.mp4`;
-    const uploadTask = this.storage.upload(clipPath, this.file);
+    this.uploadTask = this.storage.upload(clipPath, this.file);
     const clipRef = this.storage.ref(clipPath);
 
-    uploadTask.percentageChanges().subscribe((progress) => {
+    this.uploadTask.percentageChanges().subscribe((progress) => {
       this.percentage = (progress as number) / 100;
     });
 
-    uploadTask
+    this.uploadTask
       .snapshotChanges()
       .pipe(
         last(),
