@@ -58,6 +58,7 @@ export class UploadComponent {
   }
 
   uploadFile() {
+    this.uploadFG.disable();
     this.showAlert = true;
     this.alertColor = 'blue';
     this.alertMsg = 'Please wait! Your clip is being uploaded';
@@ -98,6 +99,7 @@ export class UploadComponent {
         },
 
         error: (error) => {
+          this.uploadFG.enable();
           this.alertColor = 'red';
           this.alertMsg = 'Upload failed! Please try again later!';
           this.inSubmission = true;
