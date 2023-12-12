@@ -13,6 +13,11 @@ export class UploadComponent {
   file: File | null = null;
   isFormVisible = false;
 
+  showAlert = false;
+  alertColor = 'blue';
+  alertMsg = 'Please wait! Your clip is being uploaded';
+  inSubmission = false;
+
   titleFC = new FormControl('', {
     validators: [Validators.required, Validators.minLength(3)],
     nonNullable: true,
@@ -39,6 +44,11 @@ export class UploadComponent {
   }
 
   uploadFile() {
+    this.showAlert = true;
+    this.alertColor = 'blue';
+    this.alertMsg = 'Please wait! Your clip is being uploaded';
+    this.inSubmission = true;
+
     const uniqueFileName = uuidv4();
     //Angular will understand automatically we want to store in sub-folder.
     const clipPath = `clips/${uniqueFileName}.mp4`;

@@ -66,5 +66,3 @@ export class RegisterComponent {
     }
   }
 }
-
-//test@gmail.com Kex2.33x
