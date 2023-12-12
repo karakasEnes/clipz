@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { last } from 'rxjs';
+import { last, switchMap } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
@@ -20,6 +21,7 @@ export class UploadComponent {
   inSubmission = false;
   percentage = 0;
   showPercentage = false;
+  user: any;
 
   titleFC = new FormControl('', {
     validators: [Validators.required, Validators.minLength(3)],
@@ -30,7 +32,14 @@ export class UploadComponent {
     title: this.titleFC,
   });
 
-  constructor(private storage: AngularFireStorage) {}
+  constructor(
+    private storage: AngularFireStorage,
+    private authService: AuthService
+  ) {
+    this.user = this.authService
+      .getAuthedUser()
+      .subscribe((user) => (this.user = user));
+  }
 
   storeFile(e: Event) {
     this.isDragover = false;
@@ -57,6 +66,7 @@ export class UploadComponent {
     //Angular will understand automatically we want to store in sub-folder.
     const clipPath = `clips/${uniqueFileName}.mp4`;
     const uploadTask = this.storage.upload(clipPath, this.file);
+    const clipRef = this.storage.ref(clipPath);
 
     uploadTask.percentageChanges().subscribe((progress) => {
       this.percentage = (progress as number) / 100;
@@ -64,9 +74,21 @@ export class UploadComponent {
 
     uploadTask
       .snapshotChanges()
-      .pipe(last())
+      .pipe(
+        last(),
+        switchMap(() => clipRef.getDownloadURL())
+      )
       .subscribe({
-        next: (snapshot) => {
+        next: (url) => {
+          const clip = {
+            uid: this.user?.uid,
+            title: this.titleFC.value,
+            fileName: `${uniqueFileName}.mp4`,
+            url,
+          };
+
+          console.log(clip);
+
           this.alertColor = 'green';
           this.alertMsg = 'Success! Your clip is ready to be share with world!';
           this.showPercentage = false;

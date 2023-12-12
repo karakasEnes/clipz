@@ -7,6 +7,7 @@ import {
 import IUser from '../models/user.model';
 import { Observable, map, delay, filter, switchMap, EMPTY } from 'rxjs';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import firebase from 'firebase/compat';
 
 interface ILoginCredentials {
   email: string;
@@ -93,5 +94,12 @@ export class AuthService {
     if (this.redirect) {
       await this.router.navigateByUrl('/');
     }
+  }
+
+  getAuthedUser() {
+    // this method will be used in upload Component,
+    // in that component we are 100% sure there is a user which authed
+    // we know this coz of our AuthGuard we setup
+    return this.auth.user;
   }
 }
