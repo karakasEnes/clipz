@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { ClipService } from 'src/app/services/clip.service';
 import IClip from 'src/app/models/clip.model';
+import { ModalService } from 'src/app/services/modal.service';
+
 @Component({
   selector: 'app-manage',
   templateUrl: './manage.component.html',
@@ -14,7 +16,8 @@ export class ManageComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private clipService: ClipService
+    private clipService: ClipService,
+    private modalService: ModalService
   ) {
     this.route.queryParams.subscribe((params: Params) => {
       this.videoOrder = params?.['sort'] === '2' ? '2' : '1';
@@ -42,5 +45,10 @@ export class ManageComponent implements OnInit {
         sort: value,
       },
     });
+  }
+
+  openModal(e: Event, clip: IClip) {
+    e.preventDefault();
+    this.modalService.toggleModal('editClip');
   }
 }
