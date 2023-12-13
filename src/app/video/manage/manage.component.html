@@ -66,4 +66,7 @@
   </div>
 </div>
 
-<app-edit [activeClipInput]="activeClip"></app-edit>
+<app-edit
+  [activeClipInput]="activeClip"
+  (updateEmitter)="update($event)"
+></app-edit>
