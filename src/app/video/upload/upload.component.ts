@@ -5,7 +5,7 @@ import {
 } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { last, switchMap } from 'rxjs';
+import { combineLatest, switchMap, forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { ClipService } from 'src/app/services/clip.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -105,25 +105,41 @@ export class UploadComponent implements OnDestroy {
       screenshotPath,
       screenshotBlob
     );
+    const screenshotRef = this.storage.ref(screenshotPath);
 
-    this.uploadTask.percentageChanges().subscribe((progress) => {
-      this.percentage = (progress as number) / 100;
+    combineLatest(
+      this.uploadTask.percentageChanges(),
+      this.uploadTaskScreenshot.percentageChanges()
+    ).subscribe((progress) => {
+      const [clipProgress, screenshotProgress] = progress;
+      if (!clipProgress || !screenshotProgress) {
+        return;
+      }
+
+      const total = clipProgress + screenshotProgress;
+
+      this.percentage = (total as number) / 200;
     });
 
-    this.uploadTask
-      .snapshotChanges()
+    forkJoin([
+      this.uploadTask.snapshotChanges(),
+      this.uploadTaskScreenshot.snapshotChanges(),
+    ])
       .pipe(
-        last(),
-        switchMap(() => clipRef.getDownloadURL())
+        switchMap(() =>
+          forkJoin([clipRef.getDownloadURL(), screenshotRef.getDownloadURL()])
+        )
       )
       .subscribe({
-        next: async (url) => {
+        next: async (urls) => {
+          const [clipURL, screenshotURL] = urls;
           const clip = {
             uid: this.user?.uid as string,
             displayName: this.user?.displayName as string,
             title: this.titleFC.value,
             fileName: `${uniqueFileName}.mp4`,
-            url,
+            url: clipURL,
+            screenshotURL,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
           };
 
