@@ -32,6 +32,7 @@ export class UploadComponent implements OnDestroy {
   uploadTask?: AngularFireUploadTask;
   screenshots: string[] = [];
   selectedScreenshot = '';
+  uploadTaskScreenshot?: AngularFireUploadTask;
 
   titleFC = new FormControl('', {
     validators: [Validators.required, Validators.minLength(3)],
@@ -80,7 +81,7 @@ export class UploadComponent implements OnDestroy {
     this.isFormVisible = true;
   }
 
-  uploadFile() {
+  async uploadFile() {
     this.uploadFG.disable();
     this.showAlert = true;
     this.alertColor = 'blue';
@@ -91,8 +92,19 @@ export class UploadComponent implements OnDestroy {
     const uniqueFileName = uuidv4();
     //Angular will understand automatically we want to store in sub-folder.
     const clipPath = `clips/${uniqueFileName}.mp4`;
+
+    const screenshotBlob = await this.ffmpegService.blobFromURL(
+      this.selectedScreenshot
+    );
+    const screenshotPath = `screenshots/${uniqueFileName}.png`;
+
     this.uploadTask = this.storage.upload(clipPath, this.file);
     const clipRef = this.storage.ref(clipPath);
+
+    this.uploadTaskScreenshot = this.storage.upload(
+      screenshotPath,
+      screenshotBlob
+    );
 
     this.uploadTask.percentageChanges().subscribe((progress) => {
       this.percentage = (progress as number) / 100;
