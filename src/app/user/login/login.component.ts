@@ -8,8 +8,8 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class LoginComponent {
   credentials = {
-    email: '',
-    password: '',
+    email: 'test@gmail.com',
+    password: 'Kex2.33x',
   };
 
   alertMsg = '';

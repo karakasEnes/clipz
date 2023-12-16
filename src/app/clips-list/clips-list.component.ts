@@ -37,4 +37,8 @@ export class ClipsListComponent implements OnInit, OnDestroy {
       this.clipService.getClips();
     }
   };
+
+  scrollToTop() {
+    window.scrollTo({ top: 100, behavior: 'smooth' });
+  }
 }

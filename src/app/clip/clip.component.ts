@@ -25,6 +25,7 @@ export class ClipComponent implements OnInit {
   constructor(public route: ActivatedRoute) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 100, behavior: 'smooth' });
     this.player = videojs(this.target?.nativeElement);
 
     this.route.data.subscribe((data) => {
