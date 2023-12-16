@@ -8,6 +8,7 @@ import {
   AngularFireAuthGuard,
   redirectUnauthorizedTo,
 } from '@angular/fire/compat/auth-guard';
+import { ClipService } from '../services/clip.service';
 
 const redirectUnauthorizedToHome = () => redirectUnauthorizedTo('/');
 
@@ -36,6 +37,9 @@ const routes: Routes = [
   {
     path: 'clip/:id',
     component: ClipComponent,
+    resolve: {
+      clip: ClipService,
+    },
   },
 
   {
